@@ -7,13 +7,13 @@
 ## Usage
 
 * add to your project/plugin.sbt:
-   `resolvers += Resolver.url("sbts3 ivy resolver", url("https://dl.bintray.com/emersonloureiro/sbt-plugins"))(Resolver.ivyStylePatterns)`
-   `addSbtPlugin("cf.janga" % "sbts3" % "0.10.3")`
+   `resolvers += Resolver.url("sbt-s3 resolver", url("https://dl.bintray.com/freemso/sbt-s3"))`
+   `addSbtPlugin("io.iftech" % "sbt-s3" % "0.0.3")`
 * then add to your build.sbt the line:
    `enablePlugins(S3Plugin)`
 
 You will then be able to use the tasks `s3-upload`, `s3-download`, `s3-delete`, and `s3-generate-links`, defined
-in the object `com.typesafe.sbt.S3Keys` as `s3Upload`, `s3Download`, `s3Delete`, and `s3GenerateLinks` respectively.
+in the object `io.iftech.S3Keys` as `s3Upload`, `s3Download`, `s3Delete`, and `s3GenerateLinks` respectively.
 All these operations will use HTTPS as a transport protocol.
 
 Please check the Scaladoc API of the `S3Plugin` object, and the `S3Keys` object,
@@ -25,9 +25,9 @@ Here is a complete example:
 
 project/plugin.sbt:
 
-    resolvers += Resolver.url("sbts3 ivy resolver", url("https://dl.bintray.com/emersonloureiro/sbt-plugins"))(Resolver.ivyStylePatterns)
+    resolvers += Resolver.url("sbt-s3 resolver", url("https://dl.bintray.com/freemso/sbt-s3"))
 
-    addSbtPlugin("cf.janga" % "sbts3" % "0.10.3")
+    addSbtPlugin("io.iftech" % "sbt-s3" % "0.0.3")
 
 build.sbt:
 
@@ -35,30 +35,23 @@ build.sbt:
 
     mappings in s3Upload := Seq((new java.io.File("a"),"zipa.txt"),(new java.io.File("b"),"pongo/zipb.jar"))
 
-    s3Host in s3Upload := "s3sbt-test.s3.amazonaws.com"
+    s3Bucket in s3Upload := "s3sbt-test"
 
-    credentials += Credentials(Path.userHome / ".s3credentials")
-
-~/.s3credentials:
-
-    realm=Amazon S3
-    host=s3sbt-test.s3.amazonaws.com
-    user=<Access Key ID>
-    password=<Secret Access Key>
+    s3Region in s3Upload := "cn-northwest-1"
 
 Just create two sample files called "a" and "b" in the same directory that contains build.sbt, then try:
 
-    $ sbt s3-upload
+    $ sbt s3Upload
 
 You can also see progress while uploading:
 
     $ sbt
     > set s3Progress in s3Upload := true
-    > s3-upload
+    > s3Upload
     [==================================================]   100%   zipa.txt
     [=====================================>            ]    74%   zipb.jar
 
-Unless explicitly provided as described above, credentials will be obtained via (in order):
+S3 credentials will be obtained via (in order):
 
 1. `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables
 2. `aws.accessKeyId` and `aws.secretKey` Java system properties
@@ -88,9 +81,9 @@ build.sbt:
 
     s3Metadata in s3Upload := Map("css/style-group2.css" -> md)
 
-    s3Host in s3Upload := "s3sbt-test.s3.amazonaws.com"
+    s3Bucket in s3Upload := "s3sbt-test"
 
-    credentials += Credentials(Path.userHome / ".s3credentials")
+    s3Region in s3Upload := "cn-northwest-1"
 
 
 ## License
