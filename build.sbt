@@ -9,9 +9,10 @@ lazy val root = (project in file("."))
   .settings(
     sbtPlugin := true,
     name := "sbt-s3",
-    bintrayRepository := "sbt-s3",
-    bintrayOrganization in bintray := None,
+    bintrayRepository := "sbt-plugins",
+    bintrayOrganization in bintray := Some(organization.value),
     libraryDependencies ++= Seq("com.amazonaws" % "aws-java-sdk-s3" % "1.11.507",
       "commons-lang" % "commons-lang" % "2.6"),
-    publishMavenStyle := true,
+    publishMavenStyle := false,
+    isSnapshot := true
   )
