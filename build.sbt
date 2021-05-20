@@ -25,16 +25,17 @@ lazy val root = (project in file("."))
       "com.sun.xml.bind" % "jaxb-impl" % "2.2.11",
       "javax.activation" % "activation" % "1.1.1"
     ),
-    scalacOptions in(Compile, doc) ++=
-      Opts.doc.title(name.value + ": " + description.value) ++
-        Opts.doc.version(version.value) ++
-        Seq("-doc-root-content", (sourceDirectory.value / "main/rootdoc.txt").getAbsolutePath),
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/iftechio/sbt-s3"),
+        "scm:git@github.com:iftechio/sbt-s3.git"
+      )
+    ),
     publishTo := sonatypePublishTo.value,
-    sonatypeProjectHosting := Some(GitHubHosting("emersonloureiro", "sbt-s3", "emerson.loureiro@gmail.com")),
-    sonatypeProfileName := "cf.janga",
+    sonatypeProjectHosting := Some(GitHubHosting("iftechio", "sbt-s3", "ouchengzu@iftech.io")),
+    sonatypeProfileName := "io.iftech",
     publishMavenStyle := true,
     publishConfiguration := publishConfiguration.value.withOverwrite(true),
     isSnapshot := true,
-    crossSbtVersions := Seq("0.13.18", "1.2.8"),
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
   )
