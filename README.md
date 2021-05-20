@@ -7,8 +7,8 @@
 ## Usage
 
 * add to your project/plugin.sbt:
-   `resolvers += Resolver.url("sbt-s3 resolver", url("https://dl.bintray.com/freemso/sbt-s3"))`
-   `addSbtPlugin("io.iftech" % "sbt-s3" % "0.0.3")`
+   `resolvers += Resolver.sonatypeRepo("public")`
+   `addSbtPlugin("io.iftech" % "sbt-s3" % "1.0.0")`
 * then add to your build.sbt the line:
    `enablePlugins(S3Plugin)`
 
@@ -25,9 +25,9 @@ Here is a complete example:
 
 project/plugin.sbt:
 
-    resolvers += Resolver.url("sbt-s3 resolver", url("https://dl.bintray.com/freemso/sbt-s3"))
+    resolvers += Resolver.sonatypeRepo("public")
 
-    addSbtPlugin("io.iftech" % "sbt-s3" % "0.0.3")
+    addSbtPlugin("io.iftech" % "sbt-s3" % "1.0.0")
 
 build.sbt:
 
@@ -51,7 +51,7 @@ You can also see progress while uploading:
     [==================================================]   100%   zipa.txt
     [=====================================>            ]    74%   zipb.jar
 
-S3 credentials will be obtained via (in order):
+Unless explicitly provided as described above, credentials will be obtained via (in order):
 
 1. `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables
 2. `aws.accessKeyId` and `aws.secretKey` Java system properties
@@ -89,3 +89,21 @@ build.sbt:
 ## License
 
 This code is open source software licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache 2.0 License</a>.
+
+## Publishing a New Release
+
+Change the version to the next non-snapshot version by modifying the version var on `build.sbt`.
+
+Then, publish a signed artifact to Sonatype
+
+```
+sbt publishSigned
+```
+
+Once that succeeds, perform a sonatype release:
+
+```
+sbt sonatypeRelease
+```
+
+Update the version to the next snapshot and commit.
