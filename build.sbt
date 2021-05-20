@@ -1,15 +1,9 @@
 import xerial.sbt.Sonatype._
 
-ThisBuild / organization := "io.iftech"
-ThisBuild / version := "1.0.0"
-ThisBuild / description := "S3 Plugin for sbt."
-
-isSnapshot := true
-
 organization := "io.iftech"
-
 organizationName := "IFTech"
-
+version := "1.0.3-SNAPSHOT"
+description := "S3 Plugin for sbt."
 startYear := Some(2019)
 
 lazy val root = (project in file("."))
@@ -31,15 +25,11 @@ lazy val root = (project in file("."))
         "scm:git@github.com:iftechio/sbt-s3.git"
       )
     ),
-    publishTo := {
-      val nexus = "https://s01.oss.sonatype.org/"
-      if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
-      else Some("releases" at nexus + "service/local/staging/deploy/maven2")
-    },
+    publishTo := sonatypePublishToBundle.value,
+    sonatypeCredentialHost := "s01.oss.sonatype.org",
     sonatypeProjectHosting := Some(GitHubHosting("iftechio", "sbt-s3", "ouchengzu@iftech.io")),
     sonatypeProfileName := "io.iftech",
     publishMavenStyle := true,
     publishConfiguration := publishConfiguration.value.withOverwrite(true),
-    isSnapshot := true,
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0"))
   )
