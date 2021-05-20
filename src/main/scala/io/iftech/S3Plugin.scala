@@ -1,8 +1,5 @@
 package io.iftech
 
-import java.io.File
-import java.util.Date
-
 import com.amazonaws.auth.{AWSStaticCredentialsProvider, DefaultAWSCredentialsProviderChain}
 import com.amazonaws.event.{ProgressEvent, ProgressEventType, SyncProgressListener}
 import com.amazonaws.services.s3.model.{GeneratePresignedUrlRequest, GetObjectRequest, PutObjectRequest}
@@ -10,6 +7,9 @@ import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
 import com.amazonaws.{AmazonWebServiceRequest, ClientConfiguration, HttpMethod, Protocol}
 import sbt.Keys.{mappings, streams}
 import sbt.{AutoPlugin, Def, SettingKey, TaskKey, URL}
+
+import java.io.File
+import java.util.Date
 
 /**
  * S3Plugin is a simple sbt plugin that can manipulate objects on Amazon S3.
@@ -74,7 +74,7 @@ object S3Plugin extends AutoPlugin {
       try {
         provider.getCredentials
       } catch {
-        case e: com.amazonaws.AmazonClientException =>
+        case _: com.amazonaws.AmazonClientException =>
           sys.error("Could not find S3 credentials for the host: " + bucket + ", and no IAM credentials available")
       }
     }
@@ -108,7 +108,7 @@ object S3Plugin extends AutoPlugin {
     ret
   }
 
-  private def progressBar(percent: Int) = {
+  private def progressBar(percent: Int): String = {
     val b = "=================================================="
     val s = "                                                 "
     val p = percent / 2
@@ -116,7 +116,7 @@ object S3Plugin extends AutoPlugin {
     z.append("\r[")
     z.append(b.substring(0, p))
     if (p < 50) {
-      z.append(">");
+      z.append(">")
       z.append(s.substring(p))
     }
     z.append("]   ")
@@ -127,10 +127,10 @@ object S3Plugin extends AutoPlugin {
     z.mkString
   }
 
-  private def addProgressListener(request: AmazonWebServiceRequest, fileSize: Long, key: String) = {
+  private def addProgressListener(request: AmazonWebServiceRequest, fileSize: Long, key: String): Unit = {
     request.setGeneralProgressListener(new SyncProgressListener {
       var uploadedBytes = 0L
-      val fileName = {
+      val fileName: Bucket = {
         val area = 30
         val n = new File(key).getName
         val l = n.length()
@@ -153,7 +153,7 @@ object S3Plugin extends AutoPlugin {
     })
   }
 
-  def prettyLastMsg(verb: String, objects: Seq[String], preposition: String, bucket: String) =
+  def prettyLastMsg(verb: String, objects: Seq[String], preposition: String, bucket: String): String =
     if (objects.length == 1) s"$verb '${objects.head}' $preposition the S3 bucket '$bucket'."
     else s"$verb ${objects.length} objects $preposition the S3 bucket '$bucket'."
 
@@ -212,7 +212,7 @@ object S3Plugin extends AutoPlugin {
     mappings in s3Upload := Seq(),
     s3Progress := false,
     s3ExpirationDate := new java.util.Date(),
-    dummy := (())
+    dummy := ()
   )
 
   override def projectSettings: Seq[Def.Setting[_]] = super.projectSettings ++ s3Settings
