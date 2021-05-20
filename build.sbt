@@ -1,5 +1,7 @@
+import xerial.sbt.Sonatype._
+
 ThisBuild / organization := "io.iftech"
-ThisBuild / version := "1.0.0-SNAPSHOT"
+ThisBuild / version := "1.0.0"
 ThisBuild / description := "S3 Plugin for sbt."
 
 isSnapshot := true
@@ -15,8 +17,6 @@ lazy val root = (project in file("."))
   .settings(
     sbtPlugin := true,
     name := "sbt-s3",
-    bintrayRepository := "sbt-plugins",
-    bintrayOrganization in bintray := Some(organization.value),
     libraryDependencies ++= Seq(
       "com.amazonaws" % "aws-java-sdk-s3" % "1.11.507",
       "commons-lang" % "commons-lang" % "2.6",
@@ -28,7 +28,7 @@ lazy val root = (project in file("."))
     scalacOptions in(Compile, doc) ++=
       Opts.doc.title(name.value + ": " + description.value) ++
         Opts.doc.version(version.value) ++
-        Seq("-doc-root-content", (sourceDirectory.value / "main/rootdoc.txt").getAbsolutePath()),
+        Seq("-doc-root-content", (sourceDirectory.value / "main/rootdoc.txt").getAbsolutePath),
     publishTo := sonatypePublishTo.value,
     sonatypeProjectHosting := Some(GitHubHosting("emersonloureiro", "sbt-s3", "emerson.loureiro@gmail.com")),
     sonatypeProfileName := "cf.janga",
