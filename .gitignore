@@ -24,3 +24,5 @@ project/target/
 gen
 out
 tmp
+
+*.DS_Store
