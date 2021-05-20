@@ -31,7 +31,11 @@ lazy val root = (project in file("."))
         "scm:git@github.com:iftechio/sbt-s3.git"
       )
     ),
-    publishTo := sonatypePublishTo.value,
+    publishTo := {
+      val nexus = "https://s01.oss.sonatype.org/"
+      if (isSnapshot.value) Some("snapshots" at nexus + "content/repositories/snapshots")
+      else Some("releases" at nexus + "service/local/staging/deploy/maven2")
+    },
     sonatypeProjectHosting := Some(GitHubHosting("iftechio", "sbt-s3", "ouchengzu@iftech.io")),
     sonatypeProfileName := "io.iftech",
     publishMavenStyle := true,
