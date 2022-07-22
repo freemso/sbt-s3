@@ -1,6 +1,7 @@
 package io.iftech
 
 import com.amazonaws.auth.{AWSStaticCredentialsProvider, DefaultAWSCredentialsProviderChain}
+import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.event.{ProgressEvent, ProgressEventType, SyncProgressListener}
 import com.amazonaws.services.s3.model.{GeneratePresignedUrlRequest, GetObjectRequest, PutObjectRequest}
 import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
@@ -82,6 +83,7 @@ object S3Plugin extends AutoPlugin {
       .standard()
       .withClientConfiguration(makeProxyableClientConfiguration())
       .withCredentials(new AWSStaticCredentialsProvider(credentials))
+      .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(System.getenv("AWS_ENDPOINT"), region))
       .withRegion(region)
       .build()
   }
