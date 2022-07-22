@@ -2,7 +2,7 @@ import xerial.sbt.Sonatype._
 
 organization := "io.iftech"
 organizationName := "IFTech"
-version := "1.0.3-SNAPSHOT"
+version := "1.0.3.1-SNAPSHOT"
 description := "S3 Plugin for sbt."
 startYear := Some(2019)
 
@@ -12,7 +12,7 @@ lazy val root = (project in file("."))
     sbtPlugin := true,
     name := "sbt-s3",
     libraryDependencies ++= Seq(
-      "com.amazonaws" % "aws-java-sdk-s3" % "1.11.507",
+      "com.amazonaws" % "aws-java-sdk-s3" % "1.11.892",
       "commons-lang" % "commons-lang" % "2.6",
       "javax.xml.bind" % "jaxb-api" % "2.2.11",
       "com.sun.xml.bind" % "jaxb-core" % "2.2.11",

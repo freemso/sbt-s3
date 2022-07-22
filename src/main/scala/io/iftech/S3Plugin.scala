@@ -175,6 +175,17 @@ object S3Plugin extends AutoPlugin {
       { (bucket, mapps) => prettyLastMsg("Uploaded", mapps.map(_._2), "to", bucket) }
     ).value,
 
+    ossUpload := s3InitTask[(File, String), MetadataMap, String](ossUpload, mappings, s3Metadata,
+      { case (client, bucket, (file, key), metadata, progress) =>
+        val request = new PutObjectRequest(bucket, key, file)
+        if (progress) addProgressListener(request, file.length(), key)
+        client.putObject(metadata.get(key).map(request.withMetadata).getOrElse(request))
+        key
+      },
+      { case (bucket, (file, key)) => "Uploading " + file.getAbsolutePath + " as " + key + " into " + bucket },
+      { (bucket, mapps) => prettyLastMsg("Uploaded", mapps.map(_._2), "to", bucket) }
+    ).value,
+
     s3Download := s3InitTask[(File, String), Unit, File](s3Download, mappings, dummy,
       { case (client, bucket, (file, key), _, progress) =>
         val request = new GetObjectRequest(bucket, key)
