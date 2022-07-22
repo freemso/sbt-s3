@@ -84,7 +84,7 @@ object S3Plugin extends AutoPlugin {
       .withClientConfiguration(makeProxyableClientConfiguration())
       .withCredentials(new AWSStaticCredentialsProvider(credentials))
       .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(System.getenv("AWS_ENDPOINT"), region))
-      .withRegion(region)
+      .withPathStyleAccessEnabled(false)
       .build()
   }
 
