@@ -223,6 +223,7 @@ object S3Plugin extends AutoPlugin {
     s3Metadata := Map(),
     mappings in s3Download := Seq(),
     mappings in s3Upload := Seq(),
+    mappings in ossUpload := Seq(),
     s3Progress := false,
     s3ExpirationDate := new java.util.Date(),
     dummy := ()
