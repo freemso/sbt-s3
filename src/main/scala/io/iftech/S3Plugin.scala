@@ -1,6 +1,7 @@
 package io.iftech
 
 import com.amazonaws.auth.{AWSStaticCredentialsProvider, DefaultAWSCredentialsProviderChain}
+import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.event.{ProgressEvent, ProgressEventType, SyncProgressListener}
 import com.amazonaws.services.s3.model.{GeneratePresignedUrlRequest, GetObjectRequest, PutObjectRequest}
 import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
@@ -82,7 +83,8 @@ object S3Plugin extends AutoPlugin {
       .standard()
       .withClientConfiguration(makeProxyableClientConfiguration())
       .withCredentials(new AWSStaticCredentialsProvider(credentials))
-      .withRegion(region)
+      .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(System.getenv("AWS_ENDPOINT"), region))
+      .withPathStyleAccessEnabled(false)
       .build()
   }
 
@@ -173,6 +175,17 @@ object S3Plugin extends AutoPlugin {
       { (bucket, mapps) => prettyLastMsg("Uploaded", mapps.map(_._2), "to", bucket) }
     ).value,
 
+    ossUpload := s3InitTask[(File, String), MetadataMap, String](ossUpload, mappings, s3Metadata,
+      { case (client, bucket, (file, key), metadata, progress) =>
+        val request = new PutObjectRequest(bucket, key, file)
+        if (progress) addProgressListener(request, file.length(), key)
+        client.putObject(metadata.get(key).map(request.withMetadata).getOrElse(request))
+        key
+      },
+      { case (bucket, (file, key)) => "Uploading " + file.getAbsolutePath + " as " + key + " into " + bucket },
+      { (bucket, mapps) => prettyLastMsg("Uploaded", mapps.map(_._2), "to", bucket) }
+    ).value,
+
     s3Download := s3InitTask[(File, String), Unit, File](s3Download, mappings, dummy,
       { case (client, bucket, (file, key), _, progress) =>
         val request = new GetObjectRequest(bucket, key)
@@ -210,6 +223,7 @@ object S3Plugin extends AutoPlugin {
     s3Metadata := Map(),
     mappings in s3Download := Seq(),
     mappings in s3Upload := Seq(),
+    mappings in ossUpload := Seq(),
     s3Progress := false,
     s3ExpirationDate := new java.util.Date(),
     dummy := ()

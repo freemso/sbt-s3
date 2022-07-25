@@ -20,6 +20,7 @@ trait S3Keys {
    * Returns: the sequence of uploaded keys (pathnames).
    */
   val s3Upload = TaskKey[Seq[String]]("s3-upload", "Uploads files to an S3 bucket.")
+  val ossUpload = TaskKey[Seq[String]]("oss-upload", "Uploads files to an OSS bucket.")
 
   /**
    * The task "s3-download" downloads a set of files from a specificed S3 bucket.
